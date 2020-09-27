@@ -5,7 +5,7 @@ import React from 'react';
 import { InputField } from '../components/common/InputField';
 import { Wrapper } from '../components/common/Wrapper';
 import { useRegisterMutation } from '../generated/graphql';
-import { graphlErrorsToValidationErrors, toErrorMap } from '../utils/graphl.utils';
+import {  toErrorMap } from '../utils/graphl.utils';
 
 interface RegisterProps {}
 
