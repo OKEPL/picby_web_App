@@ -1,4 +1,4 @@
-mutation Register($data: RegisterInput!){
+mutation Register($data: AuthorizationInput!){
   register(data: $data){
     errors {
       field
