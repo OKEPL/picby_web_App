@@ -60,9 +60,9 @@ export type Mutation = {
   changePassword?: Maybe<User>;
   confirmUser: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
-  login?: Maybe<User>;
+  login: AuthorizationResponse;
   logout: Scalars['Boolean'];
-  register: RegisterResponse;
+  register: AuthorizationResponse;
 };
 
 
@@ -116,13 +116,12 @@ export type MutationForgotPasswordArgs = {
 
 
 export type MutationLoginArgs = {
-  password: Scalars['String'];
-  email: Scalars['String'];
+  data: AuthorizationInput;
 };
 
 
 export type MutationRegisterArgs = {
-  data: RegisterInput;
+  data: AuthorizationInput;
 };
 
 export type CreateCatalogInput = {
@@ -147,8 +146,8 @@ export type ChangePasswordInput = {
   token: Scalars['String'];
 };
 
-export type RegisterResponse = {
-  __typename?: 'RegisterResponse';
+export type AuthorizationResponse = {
+  __typename?: 'AuthorizationResponse';
   errors?: Maybe<Array<FieldError>>;
   user?: Maybe<User>;
 };
@@ -159,7 +158,7 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
-export type RegisterInput = {
+export type AuthorizationInput = {
   password: Scalars['String'];
   email: Scalars['String'];
 };
@@ -174,15 +173,34 @@ export type ConfirmUserMutation = (
   & Pick<Mutation, 'confirmUser'>
 );
 
+export type LoginMutationVariables = Exact<{
+  data: AuthorizationInput;
+}>;
+
+
+export type LoginMutation = (
+  { __typename?: 'Mutation' }
+  & { login: (
+    { __typename?: 'AuthorizationResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'email'>
+    )> }
+  ) }
+);
+
 export type RegisterMutationVariables = Exact<{
-  data: RegisterInput;
+  data: AuthorizationInput;
 }>;
 
 
 export type RegisterMutation = (
   { __typename?: 'Mutation' }
   & { register: (
-    { __typename?: 'RegisterResponse' }
+    { __typename?: 'AuthorizationResponse' }
     & { errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
@@ -224,8 +242,47 @@ export function useConfirmUserMutation(baseOptions?: Apollo.MutationHookOptions<
 export type ConfirmUserMutationHookResult = ReturnType<typeof useConfirmUserMutation>;
 export type ConfirmUserMutationResult = Apollo.MutationResult<ConfirmUserMutation>;
 export type ConfirmUserMutationOptions = Apollo.BaseMutationOptions<ConfirmUserMutation, ConfirmUserMutationVariables>;
+export const LoginDocument = gql`
+    mutation Login($data: AuthorizationInput!) {
+  login(data: $data) {
+    errors {
+      field
+      message
+    }
+    user {
+      id
+      email
+    }
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, baseOptions);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const RegisterDocument = gql`
-    mutation Register($data: RegisterInput!) {
+    mutation Register($data: AuthorizationInput!) {
   register(data: $data) {
     errors {
       field
