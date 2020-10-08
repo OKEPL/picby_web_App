@@ -3,6 +3,7 @@ import React from 'react'
 import { useRouter } from "next/router";
 import { Button } from '@chakra-ui/core';
 import {  useConfirmUserMutation } from '../generated/graphql';
+import { withApollo } from '../utils/withApollo';
 
 interface VerifyProps {
 
@@ -33,4 +34,4 @@ interface VerifyProps {
     );
 }
 
-export default Verify;
+export default withApollo({ssr: true})(Verify);

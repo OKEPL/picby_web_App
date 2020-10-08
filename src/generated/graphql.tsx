@@ -17,7 +17,7 @@ export type Query = {
   __typename?: 'Query';
   catalogs: Array<Catalog>;
   catalog: Catalog;
-  getEntries: Array<Entry>;
+  entries: Array<Entry>;
   me?: Maybe<User>;
   hello: Scalars['String'];
 };
@@ -32,6 +32,7 @@ export type Catalog = {
   id: Scalars['ID'];
   name: Scalars['String'];
   entryCount: Scalars['Int'];
+  entries: Array<Entry>;
 };
 
 export type Entry = {
@@ -163,6 +164,19 @@ export type AuthorizationInput = {
   email: Scalars['String'];
 };
 
+export type AddCatalogMutationVariables = Exact<{
+  newCatalogData: CreateCatalogInput;
+}>;
+
+
+export type AddCatalogMutation = (
+  { __typename?: 'Mutation' }
+  & { addCatalog?: Maybe<(
+    { __typename?: 'Catalog' }
+    & Pick<Catalog, 'id' | 'name'>
+  )> }
+);
+
 export type ConfirmUserMutationVariables = Exact<{
   token: Scalars['String'];
 }>;
@@ -171,6 +185,18 @@ export type ConfirmUserMutationVariables = Exact<{
 export type ConfirmUserMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'confirmUser'>
+);
+
+export type AddEntryMutationVariables = Exact<{
+  catalogId: Scalars['String'];
+  description: Scalars['String'];
+  photo: Scalars['Upload'];
+}>;
+
+
+export type AddEntryMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addEntry'>
 );
 
 export type LoginMutationVariables = Exact<{
@@ -211,7 +237,79 @@ export type RegisterMutation = (
   ) }
 );
 
+export type CatalogQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
 
+
+export type CatalogQuery = (
+  { __typename?: 'Query' }
+  & { catalog: (
+    { __typename?: 'Catalog' }
+    & Pick<Catalog, 'id' | 'name' | 'entryCount'>
+    & { entries: Array<(
+      { __typename?: 'Entry' }
+      & Pick<Entry, 'id' | 'imageUrl'>
+    )> }
+  ) }
+);
+
+export type CatalogsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CatalogsQuery = (
+  { __typename?: 'Query' }
+  & { catalogs: Array<(
+    { __typename?: 'Catalog' }
+    & Pick<Catalog, 'id' | 'name' | 'entryCount'>
+  )> }
+);
+
+export type EntriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type EntriesQuery = (
+  { __typename?: 'Query' }
+  & { entries: Array<(
+    { __typename?: 'Entry' }
+    & Pick<Entry, 'id' | 'desc' | 'imageUrl'>
+  )> }
+);
+
+
+export const AddCatalogDocument = gql`
+    mutation AddCatalog($newCatalogData: CreateCatalogInput!) {
+  addCatalog(newCatalogData: $newCatalogData) {
+    id
+    name
+  }
+}
+    `;
+export type AddCatalogMutationFn = Apollo.MutationFunction<AddCatalogMutation, AddCatalogMutationVariables>;
+
+/**
+ * __useAddCatalogMutation__
+ *
+ * To run a mutation, you first call `useAddCatalogMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddCatalogMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addCatalogMutation, { data, loading, error }] = useAddCatalogMutation({
+ *   variables: {
+ *      newCatalogData: // value for 'newCatalogData'
+ *   },
+ * });
+ */
+export function useAddCatalogMutation(baseOptions?: Apollo.MutationHookOptions<AddCatalogMutation, AddCatalogMutationVariables>) {
+        return Apollo.useMutation<AddCatalogMutation, AddCatalogMutationVariables>(AddCatalogDocument, baseOptions);
+      }
+export type AddCatalogMutationHookResult = ReturnType<typeof useAddCatalogMutation>;
+export type AddCatalogMutationResult = Apollo.MutationResult<AddCatalogMutation>;
+export type AddCatalogMutationOptions = Apollo.BaseMutationOptions<AddCatalogMutation, AddCatalogMutationVariables>;
 export const ConfirmUserDocument = gql`
     mutation ConfirmUser($token: String!) {
   confirmUser(token: $token)
@@ -242,6 +340,38 @@ export function useConfirmUserMutation(baseOptions?: Apollo.MutationHookOptions<
 export type ConfirmUserMutationHookResult = ReturnType<typeof useConfirmUserMutation>;
 export type ConfirmUserMutationResult = Apollo.MutationResult<ConfirmUserMutation>;
 export type ConfirmUserMutationOptions = Apollo.BaseMutationOptions<ConfirmUserMutation, ConfirmUserMutationVariables>;
+export const AddEntryDocument = gql`
+    mutation AddEntry($catalogId: String!, $description: String!, $photo: Upload!) {
+  addEntry(catalogId: $catalogId, description: $description, photo: $photo)
+}
+    `;
+export type AddEntryMutationFn = Apollo.MutationFunction<AddEntryMutation, AddEntryMutationVariables>;
+
+/**
+ * __useAddEntryMutation__
+ *
+ * To run a mutation, you first call `useAddEntryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddEntryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addEntryMutation, { data, loading, error }] = useAddEntryMutation({
+ *   variables: {
+ *      catalogId: // value for 'catalogId'
+ *      description: // value for 'description'
+ *      photo: // value for 'photo'
+ *   },
+ * });
+ */
+export function useAddEntryMutation(baseOptions?: Apollo.MutationHookOptions<AddEntryMutation, AddEntryMutationVariables>) {
+        return Apollo.useMutation<AddEntryMutation, AddEntryMutationVariables>(AddEntryDocument, baseOptions);
+      }
+export type AddEntryMutationHookResult = ReturnType<typeof useAddEntryMutation>;
+export type AddEntryMutationResult = Apollo.MutationResult<AddEntryMutation>;
+export type AddEntryMutationOptions = Apollo.BaseMutationOptions<AddEntryMutation, AddEntryMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($data: AuthorizationInput!) {
   login(data: $data) {
@@ -320,3 +450,110 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const CatalogDocument = gql`
+    query Catalog($id: String!) {
+  catalog(id: $id) {
+    id
+    name
+    entryCount
+    entries {
+      id
+      imageUrl
+    }
+  }
+}
+    `;
+
+/**
+ * __useCatalogQuery__
+ *
+ * To run a query within a React component, call `useCatalogQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCatalogQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCatalogQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useCatalogQuery(baseOptions?: Apollo.QueryHookOptions<CatalogQuery, CatalogQueryVariables>) {
+        return Apollo.useQuery<CatalogQuery, CatalogQueryVariables>(CatalogDocument, baseOptions);
+      }
+export function useCatalogLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CatalogQuery, CatalogQueryVariables>) {
+          return Apollo.useLazyQuery<CatalogQuery, CatalogQueryVariables>(CatalogDocument, baseOptions);
+        }
+export type CatalogQueryHookResult = ReturnType<typeof useCatalogQuery>;
+export type CatalogLazyQueryHookResult = ReturnType<typeof useCatalogLazyQuery>;
+export type CatalogQueryResult = Apollo.QueryResult<CatalogQuery, CatalogQueryVariables>;
+export const CatalogsDocument = gql`
+    query Catalogs {
+  catalogs {
+    id
+    name
+    entryCount
+  }
+}
+    `;
+
+/**
+ * __useCatalogsQuery__
+ *
+ * To run a query within a React component, call `useCatalogsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCatalogsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCatalogsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCatalogsQuery(baseOptions?: Apollo.QueryHookOptions<CatalogsQuery, CatalogsQueryVariables>) {
+        return Apollo.useQuery<CatalogsQuery, CatalogsQueryVariables>(CatalogsDocument, baseOptions);
+      }
+export function useCatalogsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CatalogsQuery, CatalogsQueryVariables>) {
+          return Apollo.useLazyQuery<CatalogsQuery, CatalogsQueryVariables>(CatalogsDocument, baseOptions);
+        }
+export type CatalogsQueryHookResult = ReturnType<typeof useCatalogsQuery>;
+export type CatalogsLazyQueryHookResult = ReturnType<typeof useCatalogsLazyQuery>;
+export type CatalogsQueryResult = Apollo.QueryResult<CatalogsQuery, CatalogsQueryVariables>;
+export const EntriesDocument = gql`
+    query Entries {
+  entries {
+    id
+    desc
+    imageUrl
+  }
+}
+    `;
+
+/**
+ * __useEntriesQuery__
+ *
+ * To run a query within a React component, call `useEntriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEntriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEntriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEntriesQuery(baseOptions?: Apollo.QueryHookOptions<EntriesQuery, EntriesQueryVariables>) {
+        return Apollo.useQuery<EntriesQuery, EntriesQueryVariables>(EntriesDocument, baseOptions);
+      }
+export function useEntriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EntriesQuery, EntriesQueryVariables>) {
+          return Apollo.useLazyQuery<EntriesQuery, EntriesQueryVariables>(EntriesDocument, baseOptions);
+        }
+export type EntriesQueryHookResult = ReturnType<typeof useEntriesQuery>;
+export type EntriesLazyQueryHookResult = ReturnType<typeof useEntriesLazyQuery>;
+export type EntriesQueryResult = Apollo.QueryResult<EntriesQuery, EntriesQueryVariables>;

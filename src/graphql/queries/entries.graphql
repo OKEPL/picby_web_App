@@ -1,0 +1,7 @@
+query Entries {
+  entries {
+    id
+    desc
+    imageUrl
+  }
+}

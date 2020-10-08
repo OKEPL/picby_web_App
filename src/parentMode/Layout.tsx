@@ -39,7 +39,7 @@ const Layout: React.FC = ({children}) => {
       <DrawerCloseButton />
       <DrawerHeader>Menu</DrawerHeader>
       <DrawerBody>
-          Folder
+          <Link href="/parentMode/catalogs">Catalogs</Link>
       </DrawerBody>
       <DrawerFooter>
         <Button>Logout</Button>

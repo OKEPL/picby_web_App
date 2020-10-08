@@ -1,8 +1,19 @@
 import { Button, Flex, Heading } from "@chakra-ui/core"
 import Link from "next/link"
+import { Wrapper } from "../components/common/Wrapper"
+import { useEntriesQuery } from "../generated/graphql"
+import { withApollo } from "../utils/withApollo"
 
 const Index = () => {
+   const {data, loading, error} = useEntriesQuery()
+   console.log(data)
+   console.log(loading)
+   if(loading) {
+     return null
+   }
+
   return (
+    <>
     <Flex 
     backgroundColor="teal.500"
       as="nav"
@@ -17,7 +28,7 @@ const Index = () => {
             </Heading>
 
         </Flex>
- 
+        
         <Button backgroundColor="blue.400">
           <Link href="/parentMode">
             Parent Mode
@@ -25,7 +36,11 @@ const Index = () => {
         </Button>
 
     </Flex>
+    <Wrapper>
+      {data && JSON.stringify(data.entries)}
+    </Wrapper>
+    </>
   )
   }
 
-export default Index
+export default withApollo({ssr: true})(Index)

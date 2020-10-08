@@ -1,0 +1,6 @@
+mutation AddCatalog($newCatalogData: CreateCatalogInput!) {
+  addCatalog(newCatalogData: $newCatalogData){
+    id
+    name
+  }
+}

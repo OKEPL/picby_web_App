@@ -1,0 +1,7 @@
+query Catalogs {
+  catalogs {
+    id
+    name
+    entryCount
+  }
+}

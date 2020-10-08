@@ -1,0 +1,3 @@
+mutation AddEntry($catalogId: String!, $description: String!, $photo: Upload!) {
+  addEntry(catalogId: $catalogId, description: $description, photo: $photo)
+}

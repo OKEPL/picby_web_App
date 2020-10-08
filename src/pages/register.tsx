@@ -6,6 +6,7 @@ import { InputField } from '../components/common/InputField';
 import { Wrapper } from '../components/common/Wrapper';
 import { useRegisterMutation } from '../generated/graphql';
 import {  toErrorMap } from '../utils/graphl.utils';
+import { withApollo } from '../utils/withApollo';
 
 interface RegisterProps {}
 
@@ -65,4 +66,4 @@ const Register: React.FC<RegisterProps> = ({}) => {
   );
 };
 
-export default Register;
+export default withApollo({ssr: true})(Register);

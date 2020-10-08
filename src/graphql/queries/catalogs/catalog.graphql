@@ -1,0 +1,11 @@
+query Catalog($id: String!){
+  catalog(id: $id){
+    id
+    name
+    entryCount
+    entries {
+      id
+      imageUrl
+    }
+  }
+}
