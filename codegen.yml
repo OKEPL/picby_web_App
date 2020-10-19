@@ -1,5 +1,8 @@
 overwrite: true
-schema: "http://localhost:8090/graphql"
+schema: 
+  - "http://localhost:8090/graphql"
+  - |
+    scalar Upload
 documents: "src/graphql/**/*.graphql"
 generates:
   src/generated/graphql.tsx:

@@ -52,6 +52,7 @@ export type User = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addProfilePicture: Scalars['Boolean'];
   addCatalog?: Maybe<Catalog>;
   removeCatalog: Scalars['Boolean'];
   updateCatalog: Catalog;
@@ -64,6 +65,11 @@ export type Mutation = {
   login: AuthorizationResponse;
   logout: Scalars['Boolean'];
   register: AuthorizationResponse;
+};
+
+
+export type MutationAddProfilePictureArgs = {
+  picture: Scalars['Upload'];
 };
 
 
@@ -85,7 +91,7 @@ export type MutationUpdateCatalogArgs = {
 export type MutationAddEntryArgs = {
   catalogId?: Maybe<Scalars['String']>;
   description: Scalars['String'];
-  photo: Scalars['Upload'];
+  photo?: Maybe<Scalars['Upload']>;
 };
 
 
@@ -125,6 +131,7 @@ export type MutationRegisterArgs = {
   data: AuthorizationInput;
 };
 
+
 export type CreateCatalogInput = {
   name: Scalars['String'];
 };
@@ -133,7 +140,6 @@ export type UpdateCatalogInput = {
   name: Scalars['String'];
   id: Scalars['String'];
 };
-
 
 export type UpdateEntryInput = {
   id: Scalars['String'];
@@ -163,6 +169,16 @@ export type AuthorizationInput = {
   password: Scalars['String'];
   email: Scalars['String'];
 };
+
+export type AddProfilePictureMutationVariables = Exact<{
+  photo: Scalars['Upload'];
+}>;
+
+
+export type AddProfilePictureMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addProfilePicture'>
+);
 
 export type AddCatalogMutationVariables = Exact<{
   newCatalogData: CreateCatalogInput;
@@ -277,6 +293,36 @@ export type EntriesQuery = (
 );
 
 
+export const AddProfilePictureDocument = gql`
+    mutation AddProfilePicture($photo: Upload!) {
+  addProfilePicture(picture: $photo)
+}
+    `;
+export type AddProfilePictureMutationFn = Apollo.MutationFunction<AddProfilePictureMutation, AddProfilePictureMutationVariables>;
+
+/**
+ * __useAddProfilePictureMutation__
+ *
+ * To run a mutation, you first call `useAddProfilePictureMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProfilePictureMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProfilePictureMutation, { data, loading, error }] = useAddProfilePictureMutation({
+ *   variables: {
+ *      photo: // value for 'photo'
+ *   },
+ * });
+ */
+export function useAddProfilePictureMutation(baseOptions?: Apollo.MutationHookOptions<AddProfilePictureMutation, AddProfilePictureMutationVariables>) {
+        return Apollo.useMutation<AddProfilePictureMutation, AddProfilePictureMutationVariables>(AddProfilePictureDocument, baseOptions);
+      }
+export type AddProfilePictureMutationHookResult = ReturnType<typeof useAddProfilePictureMutation>;
+export type AddProfilePictureMutationResult = Apollo.MutationResult<AddProfilePictureMutation>;
+export type AddProfilePictureMutationOptions = Apollo.BaseMutationOptions<AddProfilePictureMutation, AddProfilePictureMutationVariables>;
 export const AddCatalogDocument = gql`
     mutation AddCatalog($newCatalogData: CreateCatalogInput!) {
   addCatalog(newCatalogData: $newCatalogData) {

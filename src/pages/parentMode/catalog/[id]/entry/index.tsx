@@ -1,9 +1,10 @@
-import { Box, Button } from '@chakra-ui/core';
+import { Box, Button, Input } from '@chakra-ui/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useCallback, useState } from 'react'
+import React, { ChangeEvent, useCallback, useState } from 'react'
 import { useDropzone  } from 'react-dropzone';
-import { useAddEntryMutation } from '../../../../../generated/graphql';
+import { InputField } from '../../../../../components/common/InputField';
+import { useAddEntryMutation, useAddProfilePictureMutation } from '../../../../../generated/graphql';
 import Layout from '../../../../../parentMode/Layout';
 import { withApollo } from '../../../../../utils/withApollo';
 
@@ -11,24 +12,19 @@ interface CatalogProps {
 
 }
 
+let fileToSave: File | null = null; 
+
 const NewEntry: React.FC<CatalogProps> = ({}) => {
     const catalogId = useRouter().query.id as string
-    const [file, setFile] = useState(null);
+    const [description, setDescription] = useState('');
     const [preview, setPreview] = useState(null)
     const [addEntry] = useAddEntryMutation();
-    const onDrop = useCallback(async ([acceptedFile]) => {
+    const onDrop = useCallback(async ([acceptedFile]:File[]) => {
       console.log(acceptedFile)
-      // setPreview(URL.createObjectURL(acceptedFile))
-      // setFile(acceptedFile)
-      const result = await addEntry({
-        variables: {
-          photo: acceptedFile,
-          catalogId,
-          description: "TEST"
-        }
-      })
 
-      console.log(result)
+      setPreview(URL.createObjectURL(acceptedFile))
+      fileToSave = acceptedFile
+     
     }, [addEntry])
 
     const {getRootProps, getInputProps, isDragActive} = useDropzone({
@@ -38,14 +34,14 @@ const NewEntry: React.FC<CatalogProps> = ({}) => {
     })
 
     const saveEntry = async () => {
-      console.log(file)
      const result =  await addEntry({variables: {
         catalogId,
         description: "This is test",
-        photo: file
+        photo: fileToSave
       }})
       console.log(result)
     }
+
 
     return (<Layout> 
      New entry 
@@ -62,6 +58,11 @@ const NewEntry: React.FC<CatalogProps> = ({}) => {
         </div>
      </Box>
      {preview && <img src={preview} />}
+     <Input
+      onChange={(event) => setDescription(event.target.value) } 
+      placeholder="Entry description"
+      name="description"
+      />
      <Button onClick={saveEntry}>save entry</Button>
     </Layout>);
 }
