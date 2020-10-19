@@ -1,0 +1,9 @@
+query Entry($id: String!){
+  entry(id: $id){
+    id
+    desc
+    catalogId
+    imageUrl
+    userId
+  }
+}

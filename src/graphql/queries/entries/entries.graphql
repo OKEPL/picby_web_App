@@ -3,5 +3,6 @@ query Entries {
     id
     desc
     imageUrl
+    catalogId
   }
 }

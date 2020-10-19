@@ -18,12 +18,18 @@ export type Query = {
   catalogs: Array<Catalog>;
   catalog: Catalog;
   entries: Array<Entry>;
+  entry?: Maybe<Entry>;
   me?: Maybe<User>;
   hello: Scalars['String'];
 };
 
 
 export type QueryCatalogArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryEntryArgs = {
   id: Scalars['String'];
 };
 
@@ -39,7 +45,9 @@ export type Entry = {
   __typename?: 'Entry';
   id: Scalars['ID'];
   desc: Scalars['String'];
+  catalogId: Scalars['String'];
   imageUrl: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 export type User = {
@@ -288,7 +296,20 @@ export type EntriesQuery = (
   { __typename?: 'Query' }
   & { entries: Array<(
     { __typename?: 'Entry' }
-    & Pick<Entry, 'id' | 'desc' | 'imageUrl'>
+    & Pick<Entry, 'id' | 'desc' | 'imageUrl' | 'catalogId'>
+  )> }
+);
+
+export type EntryQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type EntryQuery = (
+  { __typename?: 'Query' }
+  & { entry?: Maybe<(
+    { __typename?: 'Entry' }
+    & Pick<Entry, 'id' | 'desc' | 'catalogId' | 'imageUrl' | 'userId'>
   )> }
 );
 
@@ -575,6 +596,7 @@ export const EntriesDocument = gql`
     id
     desc
     imageUrl
+    catalogId
   }
 }
     `;
@@ -603,3 +625,40 @@ export function useEntriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<En
 export type EntriesQueryHookResult = ReturnType<typeof useEntriesQuery>;
 export type EntriesLazyQueryHookResult = ReturnType<typeof useEntriesLazyQuery>;
 export type EntriesQueryResult = Apollo.QueryResult<EntriesQuery, EntriesQueryVariables>;
+export const EntryDocument = gql`
+    query Entry($id: String!) {
+  entry(id: $id) {
+    id
+    desc
+    catalogId
+    imageUrl
+    userId
+  }
+}
+    `;
+
+/**
+ * __useEntryQuery__
+ *
+ * To run a query within a React component, call `useEntryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEntryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEntryQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEntryQuery(baseOptions?: Apollo.QueryHookOptions<EntryQuery, EntryQueryVariables>) {
+        return Apollo.useQuery<EntryQuery, EntryQueryVariables>(EntryDocument, baseOptions);
+      }
+export function useEntryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EntryQuery, EntryQueryVariables>) {
+          return Apollo.useLazyQuery<EntryQuery, EntryQueryVariables>(EntryDocument, baseOptions);
+        }
+export type EntryQueryHookResult = ReturnType<typeof useEntryQuery>;
+export type EntryLazyQueryHookResult = ReturnType<typeof useEntryLazyQuery>;
+export type EntryQueryResult = Apollo.QueryResult<EntryQuery, EntryQueryVariables>;
